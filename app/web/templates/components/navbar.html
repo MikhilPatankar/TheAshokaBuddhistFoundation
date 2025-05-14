@@ -1,40 +1,57 @@
-<nav class="navbar navbar-expand-lg site-header sticky-top"></nav>
+<nav class="navbar navbar-expand-lg site-header sticky-top">
     <div class="container">
-        <a class="navbar-brand" href="{{ request.url_for('home_page') }}">
-            <img src="{{ request.url_for('static', path='img/logo.png') }}" alt="{{ settings.PROJECT_NAME }} Logo" height="40" class="d-inline-block align-text-top">
-            </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand d-flex align-items-center" href="{{ request.url_for('home_page') }}">
+            <img src="{{ request.url_for('static', path='img/logo.png') }}" alt="{{ settings.PROJECT_NAME }} Logo" height="45" class="d-inline-block align-text-top me-2">
+            <span class="fw-bold fs-5">{{ settings.PROJECT_NAME }}</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbarNav" aria-controls="mainNavbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+        <div class="collapse navbar-collapse" id="mainNavbarNav">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
                 <li class="nav-item">
                     <a class="nav-link {% if request.url.path == request.url_for('home_page') %}active{% endif %}" href="{{ request.url_for('home_page') }}">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.url.path == request.url_for('about_page') %}active{% endif %}" href="{{ request.url_for('about_page') }}">About Us</a>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="#">Teachings</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Courses</a></li>
-                <li class="nav-item"><a class.nav-link" href="#">Donate</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="teachingsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Teachings
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="teachingsDropdown">
+                        <li><a class="dropdown-item" href="#">Core Principles</a></li>
+                        <li><a class="dropdown-item" href="#">Meditation Guides</a></li>
+                        <li><a class="dropdown-item" href="#">Articles & Talks</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Courses</a>
+                </li>
+                 <li class="nav-item">
+                    <a class="nav-link" href="#">Donate</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Contact</a>
+                </li>
 
                 {% if current_user %}
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                           <i class="fas fa-user-circle me-1"></i> {{ current_user.username }}
+                    <li class="nav-item dropdown ms-lg-2">
+                        <a class="nav-link dropdown-toggle user-dropdown-toggle" href="#" id="userAccountDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                           <i class="fas fa-user-circle me-1 fs-5 align-middle"></i> {{ current_user.username }}
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                            <li><a class="dropdown-item" href="{{ request.url_for('dashboard_page') }}">Dashboard</a></li>
-                            <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userAccountDropdown">
+                            <li><a class="dropdown-item" href="{{ request.url_for('dashboard_page') }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i>Profile Settings</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="{{ request.url_for('logout') }}">Logout</a></li>
+                            <li><a class="dropdown-item text-danger" href="{{ request.url_for('logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
                         </ul>
                     </li>
                 {% else %}
-                    <li class="nav-item">
+                    <li class="nav-item ms-lg-2">
                         <a class="nav-link {% if request.url.path == request.url_for('login_page') %}active{% endif %}" href="{{ request.url_for('login_page') }}">Login</a>
                     </li>
-                    <li class="nav-item ms-lg-2">
+                    <li class="nav-item ms-lg-1">
                         <a class="btn btn-sm site-btn-gold {% if request.url.path == request.url_for('register_page') %}active{% endif %}" href="{{ request.url_for('register_page') }}">Register</a>
                     </li>
                 {% endif %}

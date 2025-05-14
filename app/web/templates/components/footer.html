@@ -1,16 +1,57 @@
-<footer class="site-footer mt-auto py-4"></footer>
-    <div class="container text-center">
-        <p class="mb-1">&copy; {% now 'utc', '%Y' %} {{ settings.PROJECT_NAME }}. All Rights Reserved.</p>
-        <ul class="list-inline">
-            <li class="list-inline-item"><a href="#">Privacy Policy</a></li>
-            <li class="list-inline-item"><a href="#">Terms of Service</a></li>
-            <li class="list-inline-item"><a href="#">Contact Us</a></li>
-        </ul>
-         <div>
-            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+<footer class="site-footer mt-auto pt-5 pb-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+                <h5 class="footer-heading mb-3">The Ashoka Buddhist Foundation</h5>
+                <p class="footer-text">
+                    Reviving ancient wisdom for modern minds. Fostering peace, understanding, and mindful living through the teachings of the Buddha.
+                </p>
+                <div class="mt-3">
+                    <a href="https://www.facebook.com/theashokabuddhistfoundation/" target="_blank" rel="noopener noreferrer" class="social-icon me-2" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://www.instagram.com/theashokabuddhistfoundation/" target="_blank" rel="noopener noreferrer" class="social-icon me-2" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.youtube.com/c/YourFoundationChannel" target="_blank" rel="noopener noreferrer" class="social-icon" aria-label="YouTube"> <i class="fab fa-youtube"></i>
+                    </a>
+                    </div>
+            </div>
+
+            <div class="col-lg-2 col-md-6 mb-4 mb-lg-0">
+                <h5 class="footer-heading mb-3">Quick Links</h5>
+                <ul class="list-unstyled footer-links">
+                    <li><a href="{{ request.url_for('about_page') }}">About Us</a></li>
+                    <li><a href="#">Teachings</a></li>
+                    <li><a href="#">Courses</a></li>
+                    <li><a href="#">Events</a></li>
+                    <li><a href="#">Donate</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                <h5 class="footer-heading mb-3">Resources</h5>
+                <ul class="list-unstyled footer-links">
+                    <li><a href="#">Articles</a></li>
+                    <li><a href="#">Meditation Guides</a></li>
+                    <li><a href="#">Community Forum</a></li>
+                    <li><a href="{{ request.url_for('privacy_policy_page') }}">Privacy Policy</a></li>
+                    <li><a href="{{ request.url_for('terms_of_service_page') }}">Terms of Service</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                <h5 class="footer-heading mb-3">Contact Us</h5>
+                <ul class="list-unstyled footer-contact-info">
+                    <li><i class="fas fa-map-marker-alt me-2"></i> [Your Foundation Address]</li> <li><i class="fas fa-phone me-2"></i> [Your Phone Number]</li>
+                    <li><i class="fas fa-envelope me-2"></i> [Your Contact Email]</li>
+                </ul>
+                 <a href="#" class="btn btn-sm site-btn-gold-outline mt-2">Send a Message</a>
+            </div>
+        </div>
+        <hr class="footer-divider my-4">
+        <div class="text-center footer-copyright">
+            &copy; {% now 'utc', '%Y' %} {{ settings.PROJECT_NAME }}. All Rights Reserved. Designed with <i class="fas fa-heart site-text-gold"></i>.
         </div>
     </div>
 </footer>

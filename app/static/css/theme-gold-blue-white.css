@@ -21,11 +21,25 @@
 /* Import Google Fonts (example) */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&family=Roboto+Slab:wght@300;400;700&display=swap');
 
+
+/* General Elegance & Modernity */
 body {
-    font-family: var(--font-secondary);
-    color: var(--color-dark-text);
-    background-color: var(--color-off-white); /* Light background for overall page */
-    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0, 51, 102, 0.1) !important; /* Softer, bluish shadow */
+}
+.rounded-3 { /* Bootstrap override for slightly more pronounced rounding */
+    border-radius: 0.5rem !important;
+}
+.btn {
+    border-radius: 0.3rem; /* Consistent button rounding */
+    letter-spacing: 0.3px;
+}
+.form-control:focus {
+    border-color: var(--color-gold-primary);
+    box-shadow: 0 0 0 0.25rem rgba(218, 165, 32, 0.15); /* Softer gold focus */
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -84,62 +98,136 @@ a:hover {
 }
 
 
-/* Navbar */
+/* Upgraded Navbar specific styles */
 .site-header {
     background-color: var(--color-white);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    border-bottom: 3px solid var(--color-gold-primary); /* Gold accent line */
+    box-shadow: 0 2px 8px rgba(0, 51, 102, 0.08); /* Softer, bluish shadow */
+    border-bottom: 2px solid var(--color-gold-primary);
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
 }
 .site-header .navbar-brand {
-    font-family: var(--font-primary);
-    font-weight: 700;
     color: var(--color-blue-primary);
+    font-size: 1.5rem; /* Slightly larger brand name */
+}
+.site-header .navbar-brand img {
+    transition: transform 0.3s ease;
+}
+.site-header .navbar-brand:hover img {
+    transform: rotate(-5deg) scale(1.05);
 }
 .site-header .nav-link {
-    color: var(--color-blue-primary);
-    font-weight: 600; /* Slightly bolder nav links */
-    padding-left: 1rem;
-    padding-right: 1rem;
+    color: var(--color-blue-secondary); /* Using secondary blue for links */
+    font-weight: 500;
+    font-size: 1rem;
+    margin: 0 0.25rem; /* Spacing between nav items */
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    transition: color 0.2s ease, background-color 0.2s ease;
 }
 .site-header .nav-link:hover,
 .site-header .nav-link.active {
     color: var(--color-gold-primary);
+    background-color: rgba(218, 165, 32, 0.05); /* Very subtle gold hover background */
 }
-.navbar-toggler {
-    border-color: var(--color-blue-secondary);
+.site-header .dropdown-menu {
+    border: 1px solid rgba(0,0,0,0.1);
+    box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1);
+    border-radius: 0.3rem;
 }
-.navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(0, 90, 156, 0.8)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+.site-header .dropdown-item {
+    color: var(--color-blue-primary);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+.site-header .dropdown-item:hover, .site-header .dropdown-item:focus {
+    background-color: var(--color-gold-light);
+    color: var(--color-blue-primary);
+}
+.site-header .dropdown-item i {
+    opacity: 0.7;
+}
+.user-dropdown-toggle .fa-user-circle { /* Style for user icon in navbar */
+    color: var(--color-blue-secondary);
+}
+.user-dropdown-toggle:hover .fa-user-circle, .user-dropdown-toggle.show .fa-user-circle {
+    color: var(--color-gold-primary);
 }
 
-/* Footer */
+
+/* Upgraded Footer specific styles */
 .site-footer {
     background-color: var(--color-blue-primary);
-    color: var(--color-off-white);
-    padding-top: 2rem;
-    padding-bottom: 2rem;
+    color: #adb5bd; /* Lighter grey for text on dark blue */
+    font-size: 0.95rem;
 }
-.site-footer p {
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-}
-.site-footer a {
+.footer-heading {
     color: var(--color-gold-secondary);
+    font-family: var(--font-primary);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-size: 1.1rem;
 }
-.site-footer a:hover {
+.footer-text {
+    color: #ced4da; /* Slightly brighter than default footer text */
+}
+.footer-links li {
+    margin-bottom: 0.6rem;
+}
+.footer-links a {
+    color: #adb5bd;
+    transition: color 0.2s ease, padding-left 0.2s ease;
+}
+.footer-links a:hover {
     color: var(--color-white);
-    text-decoration: underline;
+    text-decoration: none;
+    padding-left: 5px;
+}
+.footer-contact-info li {
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: flex-start; /* Align icon with first line of text */
+}
+.footer-contact-info i {
+    color: var(--color-gold-primary);
+    width: 20px; /* Ensure consistent spacing for icons */
+    margin-top: 3px; /* Fine-tune vertical alignment */
 }
 .site-footer .social-icon {
-    font-size: 1.5rem;
-    margin: 0 0.5rem;
-    color: var(--color-gold-secondary);
-    transition: color 0.2s;
+    font-size: 1.4rem; /* Slightly larger social icons */
+    color: #adb5bd;
+    background-color: rgba(255,255,255,0.1);
+    width: 40px;
+    height: 40px;
+    line-height: 40px; /* Vertically center icon */
+    text-align: center;
+    border-radius: 50%;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 .site-footer .social-icon:hover {
     color: var(--color-white);
+    background-color: var(--color-gold-primary);
+}
+.footer-divider {
+    border-color: rgba(255, 255, 255, 0.15);
+}
+.footer-copyright {
+    font-size: 0.9rem;
+    color: #999;
+}
+.footer-copyright .fa-heart {
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+.footer-copyright:hover .fa-heart {
+    color: var(--color-gold-secondary); /* Brighter gold on hover */
+    transform: scale(1.2);
 }
 
+
+/* Background class for CTAs etc. */
+.bg-light-gold {
+    background-color: var(--color-gold-light) !important;
+}
 
 /* Hero Section */
 .hero-section {
@@ -185,6 +273,17 @@ a:hover {
     box-shadow: 0 0.5rem 1rem rgba(0, 51, 102, 0.15) !important; /* Softer blue shadow */
 }
 
+/* For legal pages */
+.legal-page h2 {
+    font-size: 1.75rem;
+    border-left: 4px solid var(--color-gold-primary);
+    padding-left: 1rem;
+}
+.legal-page p, .legal-page li {
+    line-height: 1.8;
+    color: var(--color-grey-text);
+}
+
 /* Alerts - for flash messages */
 .alert-success {
     background-color: #d1e7dd; /* Bootstrap success green */
@@ -219,19 +318,19 @@ a:hover {
     }
 }
 
-@media (max-width: 767.98px) { /* Small devices (landscape phones, less than 768px) */
-    .hero-section h1 {
-        font-size: 2.5rem;
+/* Responsive Hero Image */
+@media (max-width: 767.98px) {
+    .hero-section {
+        padding: 5rem 0;
+        min-height: 60vh;
+    }
+    .hero-section .display-3 {
+        font-size: 2.8rem;
     }
     .hero-section .lead {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
-    .feature-icon-bg {
-        width: 3rem;
-        height: 3rem;
-        font-size: 1.5rem; /* Adjust icon size within */
-    }
-    .feature h3 {
-        font-size: 1.5rem;
+    .about-hero h1 {
+        font-size: 2.5rem;
     }
 }

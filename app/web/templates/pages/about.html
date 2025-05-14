@@ -1,0 +1,97 @@
+{% extends "layouts/base.html" %}
+
+{% block head_extra %}
+<style>
+    .about-hero {
+        background-color: var(--color-blue-light);
+        padding: 4rem 0;
+        text-align: center;
+    }
+    .founder-section img {
+        max-width: 300px;
+        border-radius: 50%;
+        border: 5px solid var(--color-gold-light);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .timeline-point {
+        position: relative;
+        padding-left: 30px; /* Space for the icon */
+        margin-bottom: 2rem;
+    }
+    .timeline-point::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 5px; /* Adjust vertical alignment */
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: var(--color-gold-primary);
+        border: 3px solid var(--color-white);
+        box-shadow: 0 0 0 3px var(--color-gold-primary);
+    }
+    .timeline-point h4 {
+        color: var(--color-blue-secondary);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="about-hero">
+    <div class="container">
+        <h1 class="display-4 fw-bold site-text-gold">Our Journey & Purpose</h1>
+        <p class="lead text-muted col-lg-8 mx-auto">
+            Understanding the roots, mission, and vision of the Ashoka Buddhist Foundation.
+        </p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row align-items-center founder-section mb-5">
+            <div class="col-lg-4 text-center mb-4 mb-lg-0">
+                <img src="{{ request.url_for('static', path='img/bhikkhu_shripad_placeholder.jpg') }}" alt="Bhikkhu Shripad (Placeholder)" class="img-fluid">
+                <h4 class="site-text-blue mt-3">Bhikkhu Shripad</h4>
+                <p class="text-muted">Founder</p>
+            </div>
+            <div class="col-lg-8">
+                <h2 class="fw-bold site-text-blue mb-3">The Visionary's Path</h2>
+                <p class="text-muted fs-5 lh-lg">
+                    In 2004, a young Bhikkhu named Shripad made a profound decision to join the monk order, known as the bhikkhu sangha. At a tender age, he grasped the significance of education and embarked on a journey of studying, exploring, and traveling to foreign lands in search of a deep-rooted understanding of Buddhism. His quest led him to realize the urgency of reviving the lost Buddhist culture, prompting him to take action.
+                </p>
+            </div>
+        </div>
+
+        <hr class="my-5 site-divider-gold">
+
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <h2 class="fw-bold site-text-blue text-center mb-5">The Foundation's Genesis</h2>
+                <div class="timeline-point">
+                    <h4 class="fw-bold">Inspired by Legacy</h4>
+                    <p class="text-muted">Inspired by the legacy of King Ashoka and the esteemed Nalanda University, Bhikkhu Shripad envisioned the creation of an organization that would embody their ideals. Thus, he founded the Ashoka Buddhist Foundation, a tribute to the principles and teachings of these revered figures. The foundation aimed to revive and preserve the ancient Buddhist culture, emphasizing the values of compassion, wisdom, and harmony.</p>
+                </div>
+                <div class="timeline-point">
+                    <h4 class="fw-bold">Mission in Action</h4>
+                    <p class="text-muted">Under Bhikkhu Shripad's leadership, the Ashoka Buddhist Foundation became a platform for promoting education, research, and cultural exchange, rooted in the rich heritage of Buddhism. The foundation's activities included organizing educational programs, facilitating international collaborations, and supporting scholars and practitioners in their pursuit of traditional Buddhist knowledge.</p>
+                </div>
+                 <div class="timeline-point">
+                    <h4 class="fw-bold">Global Vision</h4>
+                    <p class="text-muted">Driven by the vision of a vibrant and interconnected global Buddhist community, the Ashoka Buddhist Foundation played a pivotal role in fostering cross-cultural understanding and revitalizing the teachings of Buddhism. Through its efforts, it sought to create a harmonious world where the profound wisdom of Buddhism could flourish, benefiting individuals and society as a whole.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-5 bg-light p-4 p-md-5 rounded">
+            <div class="col-md-6 mb-4 mb-md-0">
+                <h3 class="site-text-blue fw-bold">Our Mission</h3>
+                <p class="text-muted">To revive, preserve, and propagate the authentic teachings of the Buddha, making them accessible for the cultivation of wisdom, compassion, and inner peace for all beings.</p>
+            </div>
+            <div class="col-md-6">
+                <h3 class="site-text-blue fw-bold">Our Vision</h3>
+                <p class="text-muted">We envision a global community deeply rooted in Buddhist principles, fostering harmony, ethical living, and compassionate action, contributing to a more peaceful and enlightened world.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

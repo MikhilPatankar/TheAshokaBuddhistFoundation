@@ -1,53 +1,189 @@
 {% extends "layouts/base.html" %}
 
+{% block head_extra %}
+<style>
+    .hero-section {
+        background: linear-gradient(rgba(0, 51, 102, 0.6), rgba(0, 51, 102, 0.8)), url("{{ request.url_for('static', path='img/image_799fd3.jpg') }}") no-repeat center center;
+        background-size: cover;
+        color: var(--color-white);
+        padding: 8rem 0;
+        text-align: center;
+        min-height: 80vh; /* Ensure it takes significant viewport height */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .hero-section .display-3 {
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    .hero-section .lead {
+        font-size: 1.3rem;
+        font-weight: 300;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    }
+    .btn-hero-gold {
+        background-color: var(--color-gold-primary);
+        border-color: var(--color-gold-primary);
+        color: var(--color-blue-primary);
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .btn-hero-gold:hover {
+        background-color: var(--color-gold-secondary);
+        border-color: var(--color-gold-secondary);
+        color: var(--color-blue-primary);
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+    }
+    .btn-hero-outline {
+        border-color: var(--color-white);
+        color: var(--color-white);
+        font-weight: 600;
+        padding: 0.75rem 2rem;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+    }
+    .btn-hero-outline:hover {
+        background-color: var(--color-white);
+        color: var(--color-blue-primary);
+        transform: translateY(-3px);
+    }
+    .section-intro, .section-pillars, .section-cta {
+        padding: 4rem 0;
+    }
+    .section-pillars .feature-icon-inline {
+        background-color: var(--color-blue-light);
+        padding: 1rem;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+     .section-pillars .feature-icon-inline i {
+        font-size: 1.8rem; /* Adjusted from 2rem to fit better */
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="hero-section text-center py-5 mb-4 rounded-3">
+<div class="hero-section">
     <div class="container">
-        <img src="{{ request.url_for('static', path='img/image_799fd3.jpg') }}" alt="Phra Pathom Chedi Inspiration - Serene Stupa" class="hero-image img-fluid rounded mb-4 shadow-lg">
-        <h1 class="display-4 fw-bold site-text-gold">Welcome to {{ settings.PROJECT_NAME }}</h1>
-        <p class="lead site-text-blue col-lg-8 mx-auto">Discovering peace and wisdom through the timeless teachings of the Buddha. Join our community dedicated to mindful living and compassionate action.</p>
-        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
-            <a href="{{ request.url_for('about_page') }}" class="btn site-btn-gold btn-lg px-4 gap-3">Learn More About Us</a>
-            <a href="#" class="btn btn-outline-primary btn-lg px-4">Explore Courses</a> </div>
+        <h1 class="display-3 site-text-gold mb-4 animate-on-scroll">Find Your Path to Peace & Wisdom</h1>
+        <p class="lead mb-5 animate-on-scroll delay-1">
+            The Ashoka Buddhist Foundation is dedicated to preserving and sharing the timeless teachings of the Buddha, fostering a global community of mindfulness, compassion, and understanding.
+        </p>
+        <div class="d-grid gap-3 d-sm-flex justify-content-sm-center animate-on-scroll delay-2">
+            <a href="#section-intro" class="btn btn-hero-gold">Discover Our Mission</a>
+            <a href="#" class="btn btn-hero-outline">Explore Teachings</a>
+        </div>
     </div>
 </div>
 
-<div class="container px-4 py-5" id="featured-content">
-    <h2 class="pb-2 border-bottom site-text-blue fw-bold text-center">Pathways to Understanding</h2>
-    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
-        <div class="feature col">
-            <div class="feature-icon-bg d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-                <i class="fas fa-om site-text-gold"></i>
+<section id="section-intro" class="section-intro bg-light">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 animate-on-scroll">
+                <h2 class="display-5 fw-bold site-text-blue mb-3">Reviving Ancient Wisdom for Modern Minds</h2>
+                <p class="text-muted fs-5 mb-4">
+                    Inspired by the legacy of King Ashoka and the esteemed Nalanda University, the Ashoka Buddhist Foundation, founded by Bhikkhu Shripad, aims to embody their ideals. We are committed to reviving and preserving ancient Buddhist culture, emphasizing the values of compassion, wisdom, and harmony for individuals and society as a whole.
+                </p>
+                <a href="{{ request.url_for('about_page') }}" class="btn site-btn-gold-outline btn-lg">Learn More About Us</a>
             </div>
-            <h3 class="fs-3 site-text-blue">Timeless Teachings</h3>
-            <p>Explore the profound wisdom of Buddhist philosophy, meditation practices, and ethical principles that guide towards a life of clarity, compassion, and inner peace.</p>
-            <a href="#" class="icon-link">
-                Discover Dhamma
-                <i class="fas fa-arrow-right"></i>
-            </a>
-        </div>
-        <div class="feature col">
-            <div class="feature-icon-bg d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-                <i class="fas fa-users site-text-gold"></i>
-            </div>
-            <h3 class="fs-3 site-text-blue">Our Community</h3>
-            <p>Connect with a supportive Sangha. Participate in group meditations, retreats, and discussions designed to deepen your practice and foster meaningful connections.</p>
-            <a href="#" class="icon-link">
-                Join Us
-                <i class="fas fa-arrow-right"></i>
-            </a>
-        </div>
-        <div class="feature col">
-            <div class="feature-icon-bg d-inline-flex align-items-center justify-content-center fs-2 mb-3">
-                <i class="fas fa-hand-holding-heart site-text-gold"></i>
-            </div>
-            <h3 class="fs-3 site-text-blue">Compassionate Action</h3>
-            <p>Learn how the principles of mindfulness and compassion can be extended into daily life, inspiring service and positive contributions to the wider world.</p>
-            <a href="#" class="icon-link">
-                Get Involved
-                <i class="fas fa-arrow-right"></i>
-            </a>
+            <div class="col-lg-6 text-center animate-on-scroll delay-1 d-none d-lg-block">
+                <img src="{{ request.url_for('static', path='img/buddha-statue-serene.jpg') }}" alt="Serene Buddha Statue" class="img-fluid rounded shadow-lg" style="max-height: 400px;">
+                 </div>
         </div>
     </div>
-</div>
+</section>
+
+<section class="section-pillars">
+    <div class="container">
+        <h2 class="display-5 fw-bold site-text-blue text-center mb-5 animate-on-scroll">Our Core Pillars</h2>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-6 col-lg-4 text-center animate-on-scroll">
+                <div class="feature-icon-inline">
+                    <i class="fas fa-book-reader site-text-gold"></i>
+                </div>
+                <h4 class="fw-bold site-text-blue mb-2">Education & Research</h4>
+                <p class="text-muted">Promoting in-depth study and understanding of Buddhist philosophy, history, and practices through courses, workshops, and scholarly exchange.</p>
+            </div>
+            <div class="col-md-6 col-lg-4 text-center animate-on-scroll delay-1">
+                <div class="feature-icon-inline">
+                    <i class="fas fa-spa site-text-gold"></i>
+                </div>
+                <h4 class="fw-bold site-text-blue mb-2">Meditation & Mindfulness</h4>
+                <p class="text-muted">Offering guidance and retreats in various meditation techniques to cultivate inner peace, clarity, and emotional well-being.</p>
+            </div>
+            <div class="col-md-6 col-lg-4 text-center animate-on-scroll delay-2">
+                 <div class="feature-icon-inline">
+                    <i class="fas fa-people-carry site-text-gold"></i>
+                </div>
+                <h4 class="fw-bold site-text-blue mb-2">Community & Service</h4>
+                <p class="text-muted">Fostering a supportive Sangha and encouraging compassionate action and service for the betterment of all beings.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section-cta bg-light-gold"> <div class="container text-center">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 animate-on-scroll">
+                <h2 class="display-5 fw-bold site-text-blue mb-4">Embark on Your Journey</h2>
+                <p class="fs-5 text-muted mb-4">
+                    Whether you are new to Buddhist teachings or a seasoned practitioner, the Ashoka Buddhist Foundation offers resources and a community to support your path.
+                </p>
+                <a href="#" class="btn site-btn-gold btn-lg me-sm-2 mb-2 mb-sm-0">Join Our Community</a>
+                <a href="#" class="btn btn-outline-primary btn-lg mb-2 mb-sm-0">Support Our Mission</a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts_extra %}
+<script>
+// Simple animate-on-scroll
+const scrollElements = document.querySelectorAll(".animate-on-scroll");
+
+const elementInView = (el, dividend = 1) => {
+  const elementTop = el.getBoundingClientRect().top;
+  return (
+    elementTop <= (window.innerHeight || document.documentElement.clientHeight) / dividend
+  );
+};
+
+const displayScrollElement = (element) => {
+  element.classList.add("is-visible");
+};
+
+const hideScrollElement = (element) => {
+  element.classList.remove("is-visible");
+};
+
+const handleScrollAnimation = () => {
+  scrollElements.forEach((el) => {
+    if (elementInView(el, 1.25)) {
+      displayScrollElement(el);
+    } else {
+      // hideScrollElement(el); // Uncomment if you want elements to hide when scrolled out of view
+    }
+  })
+}
+
+window.addEventListener("scroll", () => {
+  handleScrollAnimation();
+});
+// Trigger on load as well
+handleScrollAnimation();
+</script>
 {% endblock %}
