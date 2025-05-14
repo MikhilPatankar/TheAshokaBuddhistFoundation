@@ -1,6 +1,7 @@
 # app/services/user_service.py
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status
+from typing import Optional  # <--- Added this import
 
 from app.db.schemas import user_schemas
 from app.repositories.user_repository import UserRepository
