@@ -1,0 +1,44 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-7 col-lg-6 col-xl-5">
+        <div class="form-auth-container p-4 p-sm-5 shadow-lg rounded-3">
+             <div class="text-center mb-4">
+                <img src="{{ request.url_for('static', path='img/logo.png') }}" alt="Logo" height="72" class="mb-3">
+                <h1 class="h3 mb-3 fw-normal site-text-blue">Create your Account</h1>
+            </div>
+            <form method="post" action="{{ request.url_for('register_post') }}">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control {% if errors and 'username' in errors %}is-invalid{% endif %}" id="username" name="username" placeholder="Choose a username" required value="{{ form_data.get('username', '') }}">
+                    <label for="username">Username</label>
+                    {% if errors and 'username' in errors %}<div class="invalid-feedback">{{ errors.username }}</div>{% endif %}
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="email" class="form-control {% if errors and 'email' in errors %}is-invalid{% endif %}" id="email" name="email" placeholder="name@example.com" required value="{{ form_data.get('email', '') }}">
+                    <label for="email">Email address</label>
+                     {% if errors and 'email' in errors %}<div class="invalid-feedback">{{ errors.email }}</div>{% endif %}
+                </div>
+                 <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="full_name" name="full_name" placeholder="Your Full Name (Optional)" value="{{ form_data.get('full_name', '') }}">
+                    <label for="full_name">Full Name (Optional)</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control {% if errors and 'password' in errors %}is-invalid{% endif %}" id="password" name="password" placeholder="Create a password" required>
+                    <label for="password">Password</label>
+                     {% if errors and 'password' in errors %}<div class="invalid-feedback">{{ errors.password }}</div>{% endif %}
+                </div>
+                <div class="form-floating mb-3">
+                    <input type="password" class="form-control {% if errors and 'confirm_password' in errors %}is-invalid{% endif %}" id="confirm_password" name="confirm_password" placeholder="Confirm password" required>
+                    <label for="confirm_password">Confirm Password</label>
+                    {% if errors and 'confirm_password' in errors %}<div class="invalid-feedback">{{ errors.confirm_password }}</div>{% endif %}
+                </div>
+                <button class="w-100 btn btn-lg site-btn-gold" type="submit">Register</button>
+            </form>
+             <div class="mt-4 text-center">
+                <p>Already have an account? <a href="{{ request.url_for('login_page') }}" class="site-text-blue-link fw-medium">Login here</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

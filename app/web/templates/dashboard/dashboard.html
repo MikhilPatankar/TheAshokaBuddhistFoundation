@@ -1,0 +1,56 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="display-5 fw-bold site-text-gold">My Dashboard</h1>
+        <a href="{{ request.url_for('logout') }}" class="btn btn-outline-secondary">Logout <i class="fas fa-sign-out-alt ms-1"></i></a>
+    </div>
+
+    <div class="alert alert-light" role="alert">
+      <h4 class="alert-heading site-text-blue">Welcome back, {{ current_user.full_name or current_user.username }}!</h4>
+      <p>This is your personal space within The Ashoka Buddhist Foundation. Here you can manage your profile, view your course enrollments, and access exclusive resources.</p>
+      <hr>
+      <p class="mb-0">We are glad to have you as part of our community.</p>
+    </div>
+
+    <div class="row mt-5 g-4">
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm custom-card">
+                <div class="card-body text-center">
+                    <div class="feature-icon-bg d-inline-flex align-items-center justify-content-center fs-1 mb-3">
+                        <i class="fas fa-user-edit site-text-gold"></i>
+                    </div>
+                    <h5 class="card-title site-text-blue">My Profile</h5>
+                    <p class="card-text">View and update your personal information and preferences.</p>
+                    <a href="#" class="btn site-btn-gold-outline">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm custom-card">
+                <div class="card-body text-center">
+                    <div class="feature-icon-bg d-inline-flex align-items-center justify-content-center fs-1 mb-3">
+                        <i class="fas fa-book-open site-text-gold"></i>
+                    </div>
+                    <h5 class="card-title site-text-blue">My Courses</h5>
+                    <p class="card-text">Access your enrolled courses, materials, and progress.</p>
+                    <a href="#" class="btn site-btn-gold-outline">View Courses</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm custom-card">
+                 <div class="card-body text-center">
+                    <div class="feature-icon-bg d-inline-flex align-items-center justify-content-center fs-1 mb-3">
+                        <i class="fas fa-donate site-text-gold"></i>
+                    </div>
+                    <h5 class="card-title site-text-blue">Donation History</h5>
+                    <p class="card-text">Review your contributions and manage recurring donations.</p>
+                    <a href="#" class="btn site-btn-gold-outline">View Donations</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

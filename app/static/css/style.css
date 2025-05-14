@@ -1,0 +1,25 @@
+/* General Custom Styles */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ensures footer sticks to bottom */
+}
+
+main.flex-shrink-0 {
+    flex-shrink: 0; /* Prevents main content from shrinking when footer is present */
+}
+
+.mt-auto {
+    margin-top: auto !important; /* For footer to stick to bottom */
+}
+
+/* Add any other general site-wide styles here */
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175)!important;
+}
+
+/* Example: Consistent spacing for sections */
+.section-py {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+}

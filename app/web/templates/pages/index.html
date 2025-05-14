@@ -1,0 +1,53 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+<div class="hero-section text-center py-5 mb-4 rounded-3">
+    <div class="container">
+        <img src="{{ request.url_for('static', path='img/image_799fd3.jpg') }}" alt="Phra Pathom Chedi Inspiration - Serene Stupa" class="hero-image img-fluid rounded mb-4 shadow-lg">
+        <h1 class="display-4 fw-bold site-text-gold">Welcome to {{ settings.PROJECT_NAME }}</h1>
+        <p class="lead site-text-blue col-lg-8 mx-auto">Discovering peace and wisdom through the timeless teachings of the Buddha. Join our community dedicated to mindful living and compassionate action.</p>
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center mt-4">
+            <a href="{{ request.url_for('about_page') }}" class="btn site-btn-gold btn-lg px-4 gap-3">Learn More About Us</a>
+            <a href="#" class="btn btn-outline-primary btn-lg px-4">Explore Courses</a> </div>
+    </div>
+</div>
+
+<div class="container px-4 py-5" id="featured-content">
+    <h2 class="pb-2 border-bottom site-text-blue fw-bold text-center">Pathways to Understanding</h2>
+    <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+        <div class="feature col">
+            <div class="feature-icon-bg d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+                <i class="fas fa-om site-text-gold"></i>
+            </div>
+            <h3 class="fs-3 site-text-blue">Timeless Teachings</h3>
+            <p>Explore the profound wisdom of Buddhist philosophy, meditation practices, and ethical principles that guide towards a life of clarity, compassion, and inner peace.</p>
+            <a href="#" class="icon-link">
+                Discover Dhamma
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="feature col">
+            <div class="feature-icon-bg d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+                <i class="fas fa-users site-text-gold"></i>
+            </div>
+            <h3 class="fs-3 site-text-blue">Our Community</h3>
+            <p>Connect with a supportive Sangha. Participate in group meditations, retreats, and discussions designed to deepen your practice and foster meaningful connections.</p>
+            <a href="#" class="icon-link">
+                Join Us
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+        <div class="feature col">
+            <div class="feature-icon-bg d-inline-flex align-items-center justify-content-center fs-2 mb-3">
+                <i class="fas fa-hand-holding-heart site-text-gold"></i>
+            </div>
+            <h3 class="fs-3 site-text-blue">Compassionate Action</h3>
+            <p>Learn how the principles of mindfulness and compassion can be extended into daily life, inspiring service and positive contributions to the wider world.</p>
+            <a href="#" class="icon-link">
+                Get Involved
+                <i class="fas fa-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
