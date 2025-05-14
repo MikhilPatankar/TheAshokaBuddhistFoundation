@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from app.db.database import async_engine, redis_pool
+import redis.asyncio
 
 # from app.tasks.celery_app import celery_app # If you want to control Celery from here (optional)
 import logging

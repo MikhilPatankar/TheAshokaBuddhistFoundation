@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
+
+# from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware  # Import this
@@ -8,12 +9,13 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.core.config import settings
 from app.core.lifespan import lifespan
+from app.core.templating import templates
 
 # from app.api.v1 import api_router_v1 # If you have API routes
 from app.web.routers import pages_web, auth_web, dashboard_web  # Import web routers
 from app.utils.logging_config import setup_logging  # If you have this
 
-# setup_logging() # Call if defined
+setup_logging()  # Call if defined
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -44,7 +46,7 @@ app.add_middleware(
 
 # --- Static Files & Templates ---
 app.mount("/static", StaticFiles(directory=settings.STATIC_DIR), name="static")
-templates = Jinja2Templates(directory=settings.TEMPLATES_DIR, enable_async=True)
+# templates = Jinja2Templates(directory=settings.TEMPLATES_DIR, enable_async=True)
 
 # --- Routers ---
 # app.include_router(api_router_v1, prefix=settings.API_V1_STR) # If you have API routes

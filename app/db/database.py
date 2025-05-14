@@ -1,8 +1,14 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, DeclarativeBase  # Import DeclarativeBase
 from app.core.config import settings
 import redis.asyncio as aioredis  # For async Redis
 from typing import AsyncGenerator
+
+
+# Define the SQLAlchemy declarative base
+class Base(DeclarativeBase):
+    pass
+
 
 # Async SQLAlchemy Engine
 async_engine = create_async_engine(

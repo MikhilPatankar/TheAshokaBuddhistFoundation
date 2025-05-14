@@ -11,7 +11,7 @@ from app.core.security import (
     clear_auth_cookies,
 )  # Renamed dependency
 from app.db.models.user_model import User  # For type hinting
-from app.main import templates  # Import global templates instance
+from app.core.templating import templates  # Import global templates instance
 
 router = APIRouter(prefix="/auth", tags=["Web Authentication"])
 
@@ -25,9 +25,9 @@ async def login_get(
         return RedirectResponse(
             url=request.url_for("dashboard_page"), status_code=status.HTTP_302_FOUND
         )
-    return templates.TemplateResponse(
-        "auth/login.html", {"request": request, "title": "Login"}
-    )
+    template = templates.get_template("auth/login.html")
+    content = await template.render_async({"request": request, "title": "Login"})
+    return HTMLResponse(content)
 
 
 @router.post("/login", name="login_post")
@@ -65,9 +65,11 @@ async def register_get(
         return RedirectResponse(
             url=request.url_for("dashboard_page"), status_code=status.HTTP_302_FOUND
         )
-    return templates.TemplateResponse(
-        "auth/register.html", {"request": request, "title": "Register", "form_data": {}}
+    template = templates.get_template("auth/register.html")
+    content = await template.render_async(
+        {"request": request, "title": "Register", "form_data": {}}
     )
+    return HTMLResponse(content)
 
 
 @router.post("/register", name="register_post")
@@ -84,20 +86,27 @@ async def register_post(
         "username": username,
         "email": email,
         "full_name": full_name,
-        "password": password,
+        "password": password,  # Note: Don't pass password back to template for security
     }
+    # For re-populating form, exclude sensitive data like password
+    form_repopulate_data = {
+        "username": username,
+        "email": email,
+        "full_name": full_name,
+    }
+
     if password != confirm_password:
         request.session["flash_error"] = "Passwords do not match."
-        return templates.TemplateResponse(
-            "auth/register.html",
+        template = templates.get_template("auth/register.html")
+        content = await template.render_async(
             {
                 "request": request,
                 "title": "Register",
-                "form_data": form_data_dict,
+                "form_data": form_repopulate_data,
                 "errors": {"confirm_password": "Passwords do not match."},
-            },
-            status_code=status.HTTP_400_BAD_REQUEST,
+            }
         )
+        return HTMLResponse(content, status_code=status.HTTP_400_BAD_REQUEST)
 
     user_in = user_schemas.UserCreate(
         username=username, email=email, full_name=full_name, password=password
@@ -110,14 +119,11 @@ async def register_post(
         )
     except HTTPException as e:
         request.session["flash_error"] = e.detail
-        # To pass errors back to the template specific to fields, you'd need more complex error handling
-        # or rely on client-side validation + generic server errors for now.
-        # For simplicity, we'll show a general error.
-        return templates.TemplateResponse(
-            "auth/register.html",
-            {"request": request, "title": "Register", "form_data": form_data_dict},
-            status_code=status.HTTP_400_BAD_REQUEST,
+        template = templates.get_template("auth/register.html")
+        content = await template.render_async(
+            {"request": request, "title": "Register", "form_data": form_repopulate_data}
         )
+        return HTMLResponse(content, status_code=status.HTTP_400_BAD_REQUEST)
 
 
 @router.get("/logout", name="logout")

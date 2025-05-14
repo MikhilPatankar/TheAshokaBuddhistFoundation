@@ -3,7 +3,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession  # If needed for dashboard data
 from app.core.security import get_current_active_user_web  # Ensures active user
 from app.db.models.user_model import User  # For type hinting
-from app.main import templates  # Import global templates instance
+from app.core.templating import templates  # Import global templates instance
 from app.core.config import settings
 from app.db.schemas import user_schemas, token_schemas  # Added this import
 
@@ -28,7 +28,8 @@ async def dashboard_get(
             status_code=status.HTTP_302_FOUND,  # Corrected status code
         )
 
-    return templates.TemplateResponse(
-        "dashboard/dashboard.html",
-        {"request": request, "title": "My Dashboard", "current_user": current_user},
+    template = templates.get_template("dashboard/dashboard.html")
+    content = await template.render_async(
+        {"request": request, "title": "My Dashboard", "current_user": current_user}
     )
+    return HTMLResponse(content)
