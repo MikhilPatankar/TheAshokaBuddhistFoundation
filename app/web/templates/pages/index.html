@@ -3,7 +3,7 @@
 {% block head_extra %}
 <style>
     .hero-section {
-        background: linear-gradient(rgba(0, 51, 102, 0.6), rgba(0, 51, 102, 0.8)), url("{{ request.url_for('static', path='img/image_799fd3.jpg') }}") no-repeat center center;
+        background: linear-gradient(rgba(0, 51, 102, 0.6), rgba(0, 51, 102, 0.8)), url("{{ request.url_for('static', path='img/background-theme.jpg') }}") no-repeat center center;
         background-size: cover;
         color: var(--color-white);
         padding: 8rem 0;
@@ -100,7 +100,7 @@
                 <a href="{{ request.url_for('about_page') }}" class="btn site-btn-gold-outline btn-lg">Learn More About Us</a>
             </div>
             <div class="col-lg-6 text-center animate-on-scroll delay-1 d-none d-lg-block">
-                <img src="{{ request.url_for('static', path='img/buddha-statue-serene.jpg') }}" alt="Serene Buddha Statue" class="img-fluid rounded shadow-lg" style="max-height: 400px;">
+                <img src="{{ request.url_for('static', path='img/buddha-statue-serene.jpeg') }}" alt="Serene Buddha Statue" class="img-fluid rounded shadow-lg" style="max-height: 400px;">
                  </div>
         </div>
     </div>

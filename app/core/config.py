@@ -112,7 +112,7 @@ class Settings(BaseSettings):
                 password=self.REDIS_PASSWORD,
                 host=self.REDIS_HOST,
                 port=self.REDIS_PORT,
-                path=f"{self.REDIS_DB}",
+                path=f"/{self.REDIS_DB}",
             )
             if self.REDIS_SSL:
                 self.REDIS_URL = f"{str(base_url_main_obj)}?ssl_cert_reqs={current_cert_reqs}"

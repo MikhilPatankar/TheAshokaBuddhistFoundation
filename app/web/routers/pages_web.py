@@ -38,6 +38,27 @@ async def about_page(
     return HTMLResponse(content)
 
 
-# Add other static pages like /contact, /teachings (listings) etc.
-# Remember to apply the same pattern (get_template, render_async, HTMLResponse)
-# to any other async route using templates.
+@router.get("/privacy-policy", response_class=HTMLResponse, name="privacy_policy_page")
+async def privacy_policy_page(
+    request: Request, current_user: Optional[User] = Depends(get_current_user_from_cookie_web)
+):
+    template = templates.get_template("pages/privacy_policy.html")
+    # Render the template asynchronously
+    content = await template.render_async(
+        {"request": request, "current_user": current_user, "title": "Privacy Policy"}
+    )
+    # Return an HTMLResponse with the rendered content
+    return HTMLResponse(content)
+
+
+@router.get("/terms-of-service", response_class=HTMLResponse, name="terms_of_service_page")
+async def terms_of_service_page(
+    request: Request, current_user: Optional[User] = Depends(get_current_user_from_cookie_web)
+):
+    template = templates.get_template("pages/terms_of_service.html")
+    # Render the template asynchronously
+    content = await template.render_async(
+        {"request": request, "current_user": current_user, "title": "Terms of Service"}
+    )
+    # Return an HTMLResponse with the rendered content
+    return HTMLResponse(content)

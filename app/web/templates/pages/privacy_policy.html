@@ -3,7 +3,7 @@
 {% block content %}
 <div class="container py-5 legal-page">
     <h1 class="display-5 fw-bold site-text-gold mb-4">Privacy Policy</h1>
-    <p class="text-muted"><em>Last Updated: {{ "now"|date:"%B %d, %Y" }}</em></p>
+    <p class="text-muted"><em>Last Updated: {{ "now"|date("%B %d, %Y") }}</em></p>
 
     <p class="lead">Welcome to The Ashoka Buddhist Foundation ("us", "we", or "our"). We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about this privacy notice, or our practices with regards to your personal information, please contact us.</p>
 
@@ -41,12 +41,11 @@
     <p>If you have questions or comments about this notice, you may email us at [Your Contact Email Address] or by post to:</p>
     <p>
         [The Ashoka Buddhist Foundation]<br>
-        [Your Physical Address Line 1]<br>
-        [Your Physical Address Line 2]<br>
+        [Physical Address Line 1]<br>
+        [Physical Address Line 2]<br>
         [City, State, Postal Code]<br>
         [Country]
     </p>
     <hr>
-    <p class="text-muted small"><em>Please note: This is a template Privacy Policy and should be reviewed and customized by a legal professional to ensure it accurately reflects your data practices and complies with all applicable laws and regulations.</em></p>
 </div>
 {% endblock %}
