@@ -1,6 +1,6 @@
 # app/web/routers/auth_web.py
 from fastapi import APIRouter, Request, Depends, Form, HTTPException, status, Response
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
@@ -10,6 +10,7 @@ from app.services.auth_service import auth_service_web
 from app.core.security import (
     get_current_user_from_cookie_web,
     clear_auth_cookies,
+    set_auth_cookies,
 )
 from app.db.models.user_model import User
 from app.core.templating import templates
@@ -35,7 +36,7 @@ async def login_get(
 @router.post("/login", name="login_post")
 async def login_post(
     request: Request,
-    response: Response,
+    # response: Response, # REMOVE this injected parameter
     db: AsyncSession = Depends(database.get_async_db),
     username_or_email: str = Form(...),
     password: str = Form(...),
@@ -44,34 +45,42 @@ async def login_post(
         username_or_email=username_or_email, password=password
     )
     try:
-        await auth_service_web.login_web(db=db, response=response, form_data=form_data_model)
-        request.session["flash_success"] = "Login successful!"
-        # Check for 'next' URL parameter for redirection after login
-        next_url = request.query_params.get("next")
-        if next_url:
-            return RedirectResponse(url=next_url, status_code=status.HTTP_302_FOUND)
-        return RedirectResponse(
-            url=request.url_for("dashboard_page"), status_code=status.HTTP_302_FOUND
+        # login_web now returns user, access_token, refresh_token
+        _user, access_token, refresh_token = await auth_service_web.login_web(
+            db=db, form_data=form_data_model
         )
-    except HTTPException as e:
-        # Re-render the login form with an error message and repopulate username
-        request.session["flash_error"] = e.detail  # For general flash message display
 
+        request.session["flash_success"] = "Login successful!"
+
+        next_url_param = request.query_params.get("next")
+        redirect_url_str = next_url_param if next_url_param else request.url_for("dashboard_page")
+
+        # Create the actual RedirectResponse
+        actual_response = RedirectResponse(url=redirect_url_str, status_code=status.HTTP_302_FOUND)
+
+        # Set cookies on THIS actual_response object
+        set_auth_cookies(actual_response, access_token, refresh_token)
+
+        return actual_response  # Return the response with cookies set
+
+    except HTTPException as e:
+        request.session["flash_error"] = e.detail
         template = templates.get_template("auth/login.html")
         form_repopulate_data = {"username_or_email": username_or_email}
-
         context = {
             "request": request,
             "title": "Login",
             "form_data": form_repopulate_data,
-            "error_message": e.detail,  # Specific error message for the form
+            "error_message": e.detail,
         }
         content = await template.render_async(context)
-        # Use the status code from the exception (e.g., 400, 401)
         response_status_code = (
             e.status_code if hasattr(e, "status_code") else status.HTTP_400_BAD_REQUEST
         )
-        return HTMLResponse(content, status_code=response_status_code)
+        # Create HTMLResponse for error case
+        error_response = HTMLResponse(content, status_code=response_status_code)
+        # Cookies are not set on error, which is fine.
+        return error_response
 
 
 @router.get("/register", response_class=HTMLResponse, name="register_page")
@@ -145,25 +154,39 @@ async def register_post(
 
 
 @router.get("/logout", name="logout")
-async def logout(request: Request, response: Response):
-    await auth_service_web.logout_web(response=response)
+async def logout(request: Request):
+    actual_response = RedirectResponse(
+        url=request.url_for("home_page"), status_code=status.HTTP_302_FOUND
+    )
+    clear_auth_cookies(actual_response)
     request.session["flash_info"] = "You have been logged out."
-    return RedirectResponse(url=request.url_for("home_page"), status_code=status.HTTP_302_FOUND)
+    return actual_response
 
 
-@router.post("/refresh-token", name="refresh_token_web", response_model=token_schemas.Token)
+@router.post("/refresh-token", name="refresh_token_web")  # Removed response_model for now
 async def handle_refresh_token_web(
     request: Request,
-    response: Response,
+    # response: Response, # REMOVE
     db: AsyncSession = Depends(database.get_async_db),
 ):
-    """Endpoint to refresh access token using refresh token from cookie."""
     try:
-        return await auth_service_web.refresh_access_token_web(
-            request=request, response=response, db=db
+        new_access_token, new_refresh_token = await auth_service_web.refresh_access_token_web(
+            request=request,
+            db=db,  # Pass request, db
         )
+
+        json_content = token_schemas.Token(
+            access_token=new_access_token, refresh_token=new_refresh_token
+        ).model_dump()
+
+        actual_response = JSONResponse(content=json_content)
+        set_auth_cookies(actual_response, new_access_token, new_refresh_token)
+        return actual_response
+
     except HTTPException as e:
-        # If refresh fails, clear auth cookies.
-        # The client (JS) should handle the HTTP error response.
-        clear_auth_cookies(response)
-        raise e
+        error_response_content = {"detail": e.detail}
+        actual_error_response = JSONResponse(
+            content=error_response_content, status_code=e.status_code
+        )
+        clear_auth_cookies(actual_error_response)  # Clear cookies on error
+        return actual_error_response

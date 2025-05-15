@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, status
 from fastapi.staticfiles import StaticFiles
 
 # from fastapi.templating import Jinja2Templates
@@ -20,9 +20,7 @@ setup_logging()  # Call if defined
 app = FastAPI(
     title=settings.PROJECT_NAME,
     # openapi_url=f"{settings.API_V1_STR}/openapi.json" if settings.ENVIRONMENT == "development" else None,
-    docs_url=(
-        f"{settings.API_V1_STR}/docs" if settings.ENVIRONMENT == "development" else None
-    ),
+    docs_url=(f"{settings.API_V1_STR}/docs" if settings.ENVIRONMENT == "development" else None),
     # redoc_url=f"{settings.API_V1_STR}/redoc" if settings.ENVIRONMENT == "development" else None,
     lifespan=lifespan,
 )
@@ -59,45 +57,47 @@ app.include_router(dashboard_web.router)  # Handles /dashboard prefix
 @app.exception_handler(StarletteHTTPException)
 async def custom_http_exception_handler(request: Request, exc: StarletteHTTPException):
     accept_header = request.headers.get("accept", "")
+
+    # Check if the client prefers HTML response
     if "text/html" in accept_header:
         if exc.status_code == 401:  # Unauthorized
-            request.session["flash_warning"] = "Please login to access this page."
-            return RedirectResponse(
-                url=request.url_for("login_page") + f"?next={request.url}",
-                status_code=307,
-            )
+            login_url = request.url_for("login_page")
+            redirect_url_obj = login_url.include_query_params(next=str(request.url))
 
+            # Set a flash message
+            if hasattr(request, "session"):  # Check if session middleware is active
+                request.session["flash_warning"] = "Please login to access this page."
+
+            # Use 302 Found for standard web redirects after authentication failure
+            return RedirectResponse(url=str(redirect_url_obj), status_code=status.HTTP_302_FOUND)
+
+        # Handle other HTML errors (e.g., 404, 500)
         template_name = f"errors/{exc.status_code}.html"
-        # Fallback for other HTML errors (e.g., errors/500.html or a generic error.html)
-        if exc.status_code == 404:
-            return templates.TemplateResponse(
-                template_name,
-                {
-                    "request": request,
-                    "title": "Page Not Found",
-                    "current_user": (
-                        request.state.current_user
-                        if hasattr(request.state, "current_user")
-                        else None
-                    ),
-                },
-                status_code=404,
-            )
+        context = {
+            "request": request,
+            "title": f"Error {exc.status_code}",
+            "detail": exc.detail,  # Pass the detail from the exception
+            "current_user": (
+                request.state.current_user  # Assuming you add user to state elsewhere or handle in template
+                if hasattr(request.state, "current_user")
+                else None
+            ),
+        }
+
+        # Check if a specific template for the status code exists, otherwise use a generic one
+        try:
+            templates.get_template(template_name)
+        except Exception:  # Catch template not found or other template errors
+            template_name = "errors/generic_error.html"  # Fallback to a generic error template
+
         return templates.TemplateResponse(
-            "errors/500.html",
-            {
-                "request": request,
-                "title": "Server Error",
-                "detail": exc.detail,
-                "current_user": (
-                    request.state.current_user
-                    if hasattr(request.state, "current_user")
-                    else None
-                ),
-            },
+            template_name,
+            context,
             status_code=exc.status_code,
         )
 
+    # If client does not prefer HTML, or it's not a handled HTML error code,
+    # use the default FastAPI/Starlette exception handler for JSON responses etc.
     from fastapi.exception_handlers import (
         http_exception_handler as fastapi_http_exception_handler,
     )
@@ -132,4 +132,4 @@ async def add_user_to_request_state(request: Request, call_next):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("app.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("app.main:app", host="0.0.0.0", port=80, reload=True)

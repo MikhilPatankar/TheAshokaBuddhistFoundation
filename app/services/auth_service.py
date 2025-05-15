@@ -52,7 +52,7 @@ class AuthService:
         access_token = create_access_token(data={"sub": user.username, "user_id": user.id})
         refresh_token = create_refresh_token(data={"sub": user.username, "user_id": user.id})
 
-        set_auth_cookies(response, access_token, refresh_token)
+        # set_auth_cookies(response, access_token, refresh_token)
 
         # Optional: Update last login time for user
         # user.last_login_at = datetime.now(timezone.utc) # Assuming you add this field to User model
@@ -83,21 +83,16 @@ class AuthService:
                 detail="An unexpected error occurred during registration.",
             )
 
-    async def logout_web(self, response: Response):
-        clear_auth_cookies(response)
-        # logger.info("User logged out.")
-        return {"message": "Successfully logged out"}
-
     async def refresh_access_token_web(
-        self, request: Request, response: Response, db: AsyncSession
-    ) -> token_schemas.Token:
+        self,
+        request: Request,
+        db: AsyncSession,  # REMOVE 'response: Response'
+    ) -> tuple[str, str]:  # Return new_access_token, new_refresh_token
         refresh_token_from_cookie = request.cookies.get("refresh_token")
         if not refresh_token_from_cookie:
-            # logger.warning("Refresh token missing from cookie.")
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token missing"
             )
-
         try:
             payload = jwt.decode(
                 refresh_token_from_cookie,
@@ -105,61 +100,45 @@ class AuthService:
                 algorithms=[settings.ALGORITHM],
             )
             if payload.get("type") != "refresh":
-                # logger.warning("Invalid token type for refresh.")
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail="Invalid token type",
                 )
-
             username: str | None = payload.get("sub")
             user_id: int | None = payload.get("user_id")
             if not username or not user_id:
-                # logger.warning("Invalid refresh token payload: missing username or user_id.")
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail="Invalid refresh token payload",
                 )
-
-            user_repo = UserRepository(db_session=db)  # Instantiate UserRepository
-            user = await user_repo.get_by_id(user_id=user_id)  # Corrected call
-
+            user_repo = UserRepository(db_session=db)
+            user = await user_repo.get_by_id(user_id=user_id)
             if not user or user.username != username:
-                # logger.warning(f"User not found or token mismatch for user_id {user_id}.")
                 raise HTTPException(
                     status_code=status.HTTP_401_UNAUTHORIZED,
                     detail="User not found or token mismatch",
                 )
             if not user.is_active:
-                # logger.warning(f"User {username} is inactive during token refresh.")
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST, detail="User is inactive"
                 )
 
             new_access_token = create_access_token(data={"sub": user.username, "user_id": user.id})
-            # Optionally, issue a new refresh token (for refresh token rotation)
             new_refresh_token = create_refresh_token(
                 data={"sub": user.username, "user_id": user.id}
             )
-
-            set_auth_cookies(response, new_access_token, new_refresh_token)  # Update cookies
-            # logger.info(f"Access token refreshed for user {username}.")
-
-            return token_schemas.Token(
-                access_token=new_access_token, refresh_token=new_refresh_token
-            )
-
-        except JWTError as e:
-            # logger.error(f"JWTError during token refresh: {e}", exc_info=True)
-            clear_auth_cookies(response)  # Clear cookies if refresh token is invalid
+            # DO NOT call set_auth_cookies here
+            return new_access_token, new_refresh_token
+        except JWTError:
+            # DO NOT call clear_auth_cookies here
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid or expired refresh token",
             )
-        except HTTPException:  # Re-raise HTTPExceptions to preserve status code and detail
+        except HTTPException:
             raise
-        except Exception as e:  # Catch any other unexpected errors
-            # logger.error(f"Unexpected error during token refresh: {e}", exc_info=True)
-            clear_auth_cookies(response)
+        except Exception:
+            # DO NOT call clear_auth_cookies here
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="An unexpected error occurred while refreshing token.",
