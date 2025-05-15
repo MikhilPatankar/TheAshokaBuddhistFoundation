@@ -2,16 +2,16 @@
 import logging
 import sys
 
-# from app.core.config import settings # Uncomment if you use settings.LOG_LEVEL
+from app.core.config import settings  # Uncomment if you use settings.LOG_LEVEL
 
 
 def setup_logging():
     """
     Basic logging configuration for the application.
     """
-    # log_level_str = settings.LOG_LEVEL.upper() if hasattr(settings, "LOG_LEVEL") else "INFO"
-    # log_level = getattr(logging, log_level_str, logging.INFO)
-    log_level = logging.INFO  # Default to INFO, or use settings
+    log_level_str = settings.LOG_LEVEL.upper() if hasattr(settings, "LOG_LEVEL") else "INFO"
+    log_level = getattr(logging, log_level_str, logging.INFO)
+    # log_level = logging.INFO  # Default to INFO, or use settings
 
     logging.basicConfig(
         level=log_level,

@@ -132,7 +132,7 @@ def set_auth_cookies(response: Response, access_token: str, refresh_token: str):
         httponly=True,
         max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
         path="/",
-        samesite="lax",  # Consider "strict"
+        samesite="strict",  # Consider "strict"
         secure=settings.ENVIRONMENT != "development",  # True in production
     )
     response.set_cookie(
@@ -141,7 +141,7 @@ def set_auth_cookies(response: Response, access_token: str, refresh_token: str):
         httponly=True,
         max_age=settings.REFRESH_TOKEN_EXPIRE_DAYS * 24 * 60 * 60,
         path="/auth",  # Refresh token usually only sent to refresh endpoint
-        samesite="lax",
+        samesite="strict",
         secure=settings.ENVIRONMENT != "development",
     )
 
@@ -150,12 +150,12 @@ def clear_auth_cookies(response: Response):
     response.delete_cookie(
         key="access_token",
         path="/",
-        samesite="lax",
+        samesite="strict",
         secure=settings.ENVIRONMENT != "development",
     )
     response.delete_cookie(
         key="refresh_token",
         path="/auth",
-        samesite="lax",
+        samesite="strict",
         secure=settings.ENVIRONMENT != "development",
     )

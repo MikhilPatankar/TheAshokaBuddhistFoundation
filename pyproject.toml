@@ -30,7 +30,7 @@ structlog = "^24.1.0" # Example for structured logging
 # opentelemetry-instrumentation-fastapi = "..." # For tracing (optional, advanced)
 # sentry-sdk = {extras = ["fastapi"], version = "..."} # Error tracking
 itsdangerous = "^2.2.0" # For secure cookie signing
-
+bleach = "^6.2.0" # For sanitizing HTML input
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.0"
 pytest-asyncio = "^0.23.6"
