@@ -18,24 +18,25 @@ from app.services.user_service import user_service  # For user creation
 from app.core.config import settings
 # from datetime import datetime, timezone # Uncomment if you implement last_login
 
-# import logging # Uncomment if you add logging
-# logger = logging.getLogger(__name__) # Uncomment if you add logging
+import logging  # Uncomment if you add logging
+
+logger = logging.getLogger(__name__)  # Uncomment if you add logging
 
 
 class AuthService:
     async def login_web(
-        self, db: AsyncSession, response: Response, *, form_data: user_schemas.UserLoginSchema
-    ) -> User:
-        user_repo = UserRepository(db_session=db)  # Instantiate UserRepository
+        self, db: AsyncSession, *, form_data: user_schemas.UserLoginSchema
+    ) -> tuple[User, str, str]:  # Return: User, access_token, refresh_token
+        user_repo = UserRepository(db_session=db)
         user = await user_repo.get_by_email_or_username(
             username_or_email=form_data.username_or_email
-        )  # Corrected call
+        )
 
         if not user:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Incorrect email/username or password.",
-                headers={"WWW-Authenticate": "Bearer"},  # Good practice for 401
+                headers={"WWW-Authenticate": "Bearer"},
             )
         if not user.is_active:
             raise HTTPException(
@@ -52,32 +53,27 @@ class AuthService:
         access_token = create_access_token(data={"sub": user.username, "user_id": user.id})
         refresh_token = create_refresh_token(data={"sub": user.username, "user_id": user.id})
 
-        # set_auth_cookies(response, access_token, refresh_token)
-
-        # Optional: Update last login time for user
-        # user.last_login_at = datetime.now(timezone.utc) # Assuming you add this field to User model
-        # db.add(user) # Add user to session if modified
-        # await db.commit()
-        # await db.refresh(user)
-        # logger.info(f"User {user.username} logged in successfully.")
-
-        return user
+        # DO NOT call set_auth_cookies here.
+        # Return the user and tokens. The route handler will set cookies.
+        return user, access_token, refresh_token
 
     async def register_web(self, db: AsyncSession, *, user_in: user_schemas.UserCreate) -> User:
         # This now directly calls user_service.create_user which handles checks and hashing
         # Assuming user_service.create_user correctly uses UserRepository
         try:
             new_user = await user_service.create_user(db_session=db, user_in=user_in)
-            # logger.info(f"User {new_user.username} registered successfully.")
+            logger.info(f"User {new_user.username} registered successfully.")
             # Potentially trigger welcome email task here if not done in user_service
             # from app.tasks.email_tasks import send_registration_email_task
             # send_registration_email_task.delay(new_user.email, new_user.username)
             return new_user
         except HTTPException as e:  # Propagate HTTPExceptions from user_service
-            # logger.warning(f"Registration failed for {user_in.username}: {e.detail}")
+            logger.warning(f"Registration failed for {user_in.username}: {e.detail}")
             raise e
         except Exception as e:  # Catch other unexpected errors
-            # logger.error(f"Unexpected error during registration for {user_in.username}: {e}", exc_info=True)
+            logger.error(
+                f"Unexpected error during registration for {user_in.username}: {e}", exc_info=True
+            )
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="An unexpected error occurred during registration.",

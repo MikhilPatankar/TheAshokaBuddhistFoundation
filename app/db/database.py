@@ -34,7 +34,7 @@ async def get_async_db() -> AsyncGenerator[AsyncSession, None]:
     async with AsyncSessionFactory() as session:
         try:
             yield session
-            # await session.commit() # Not committing here, services should handle transactions
+            await session.commit()  # Not committing here, services should handle transactions
         except Exception:
             await session.rollback()
             raise
@@ -43,9 +43,7 @@ async def get_async_db() -> AsyncGenerator[AsyncSession, None]:
 
 
 # Async Redis Connection Pool
-redis_pool = aioredis.ConnectionPool.from_url(
-    str(settings.REDIS_URL), decode_responses=True
-)
+redis_pool = aioredis.ConnectionPool.from_url(str(settings.REDIS_URL), decode_responses=True)
 
 
 async def get_redis_client() -> aioredis.Redis:

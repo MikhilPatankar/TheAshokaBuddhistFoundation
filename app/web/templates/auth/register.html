@@ -8,31 +8,103 @@
                 <img src="{{ request.url_for('static', path='img/logo.png') }}" alt="Logo" height="72" class="mb-3">
                 <h1 class="h3 mb-3 fw-normal site-text-blue">Create your Account</h1>
             </div>
-            <form method="post" action="{{ request.url_for('register_post') }}">
+
+            {% if error_message %}
+                <div class="alert alert-danger small" role="alert">
+                    {{ error_message }}
+                </div>
+            {% endif %}
+
+            <form method="post" action="{{ request.url_for('register_post') }}" class="needs-validation" novalidate>
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control {% if errors and 'username' in errors %}is-invalid{% endif %}" id="username" name="username" placeholder="Choose a username" required value="{{ form_data.get('username', '') }}">
+                    <input type="text" class="form-control {% if errors and 'username' in errors %}is-invalid{% endif %}"
+                           id="username" name="username" placeholder="Choose a username"
+                           required
+                           minlength="3" {# From UserCreate.username #}
+                           maxlength="30" {# From UserCreate.username #}
+                           pattern="^[a-z0-9]+(?:[_-][a-z0-9]+)*$" {# USERNAME_REGEX #}
+                           title="Username: 3-30 chars, lowercase letters/numbers, optional single '_' or '-' (not at start/end)."
+                           value="{{ form_data.get('username', '') }}">
                     <label for="username">Username</label>
-                    {% if errors and 'username' in errors %}<div class="invalid-feedback">{{ errors.username }}</div>{% endif %}
+                    {% if errors and 'username' in errors %}
+                        <div class="invalid-feedback">{{ errors.username }}</div>
+                    {% else %}
+                        <div class="invalid-feedback">Username: 3-30 chars, lowercase letters/numbers, optional single '_' or '-' (not at start/end).</div>
+                    {% endif %}
                 </div>
+
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control {% if errors and 'email' in errors %}is-invalid{% endif %}" id="email" name="email" placeholder="name@example.com" required value="{{ form_data.get('email', '') }}">
+                    <input type="email" class="form-control {% if errors and 'email' in errors %}is-invalid{% endif %}"
+                           id="email" name="email" placeholder="name@example.com"
+                           required
+                           maxlength="254" {# From UserCreate.email #}
+                           title="Please enter a valid email address."
+                           value="{{ form_data.get('email', '') }}">
                     <label for="email">Email address</label>
-                     {% if errors and 'email' in errors %}<div class="invalid-feedback">{{ errors.email }}</div>{% endif %}
+                     {% if errors and 'email' in errors %}
+                        <div class="invalid-feedback">{{ errors.email }}</div>
+                    {% else %}
+                        <div class="invalid-feedback">Please provide a valid email address (max 254 characters).</div>
+                    {% endif %}
                 </div>
+
                  <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="full_name" name="full_name" placeholder="Your Full Name (Optional)" value="{{ form_data.get('full_name', '') }}">
+                    <input type="text" class="form-control {% if errors and 'full_name' in errors %}is-invalid{% endif %}"
+                           id="full_name" name="full_name" placeholder="Your Full Name (Optional)"
+                           minlength="2" {# From UserCreate.full_name (if not empty) #}
+                           maxlength="100" {# From UserCreate.full_name #}
+                           pattern="^[a-zA-ZÀ-ÿ]+(?:[\s'-][a-zA-ZÀ-ÿ]+)*$" {# FULL_NAME_REGEX (allows empty if not required) #}
+                           title="Full Name (Optional): 2-100 chars, letters, spaces, apostrophes, hyphens. No leading/trailing spaces/hyphens."
+                           value="{{ form_data.get('full_name', '') }}">
                     <label for="full_name">Full Name (Optional)</label>
+                    {% if errors and 'full_name' in errors %}
+                        <div class="invalid-feedback">{{ errors.full_name }}</div>
+                    {% else %}
+                        <div class="invalid-feedback">Full Name: 2-100 chars, letters, spaces, apostrophes, hyphens.</div>
+                    {% endif %}
                 </div>
+
                 <div class="form-floating mb-3">
-                    <input type="password" class="form-control {% if errors and 'password' in errors %}is-invalid{% endif %}" id="password" name="password" placeholder="Create a password" required>
+                    <input type="password" class="form-control {% if errors and 'password' in errors %}is-invalid{% endif %}"
+                           id="password" name="password" placeholder="Create a password"
+                           required
+                           minlength="12" {# From UserCreate.password #}
+                           maxlength="128" {# From UserCreate.password #}
+                           title="Password: 12-128 characters. Policy requires uppercase, lowercase, digit, special character."
+                           >
                     <label for="password">Password</label>
-                     {% if errors and 'password' in errors %}<div class="invalid-feedback">{{ errors.password }}</div>{% endif %}
+                     {% if errors and 'password' in errors %}
+                        <div class="invalid-feedback">
+                            {% if errors.password is iterable and errors.password is not string %}
+                                <ul class="list-unstyled mb-0">
+                                {% for err_item in errors.password %}
+                                    <li>{{ err_item }}</li>
+                                {% endfor %}
+                                </ul>
+                            {% else %}
+                                {{ errors.password }}
+                            {% endif %}
+                        </div>
+                    {% else %}
+                         <div class="invalid-feedback">Password is required (12-128 characters).</div>
+                    {% endif %}
                 </div>
+
                 <div class="form-floating mb-3">
-                    <input type="password" class="form-control {% if errors and 'confirm_password' in errors %}is-invalid{% endif %}" id="confirm_password" name="confirm_password" placeholder="Confirm password" required>
+                    <input type="password" class="form-control {% if errors and 'confirm_password' in errors %}is-invalid{% endif %}"
+                           id="confirm_password" name="confirm_password" placeholder="Confirm password"
+                           required
+                           minlength="12" {# Should match password's minlength for consistency #}
+                           title="Please confirm your password."
+                           >
                     <label for="confirm_password">Confirm Password</label>
-                    {% if errors and 'confirm_password' in errors %}<div class="invalid-feedback">{{ errors.confirm_password }}</div>{% endif %}
+                    {% if errors and 'confirm_password' in errors %}
+                        <div class="invalid-feedback">{{ errors.confirm_password }}</div>
+                    {% else %}
+                        <div class="invalid-feedback" id="confirmPasswordFeedback">Passwords do not match or are too short.</div>
+                    {% endif %}
                 </div>
+
                 <button class="w-100 btn btn-lg site-btn-gold" type="submit">Register</button>
             </form>
              <div class="mt-4 text-center">
@@ -41,4 +113,50 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm_password');
+    const registrationForm = document.querySelector('form.needs-validation');
+
+    function validateConfirmPassword() {
+        if (confirmPasswordInput.value === '') {
+            // Let 'required' handle empty, but clear custom validity if it was set
+            confirmPasswordInput.setCustomValidity('');
+        } else if (passwordInput.value !== confirmPasswordInput.value) {
+            confirmPasswordInput.setCustomValidity('Passwords do not match.');
+        } else if (confirmPasswordInput.value.length < (parseInt(confirmPasswordInput.getAttribute('minlength')) || 12) ) {
+            // Also check minlength for confirm_password client-side for better UX
+            confirmPasswordInput.setCustomValidity('Password confirmation is too short.');
+        }
+        else {
+            confirmPasswordInput.setCustomValidity('');
+        }
+    }
+
+    if (passwordInput && confirmPasswordInput) {
+        passwordInput.addEventListener('input', () => {
+            if (confirmPasswordInput.value !== '') { validateConfirmPassword(); }
+            // Trigger validation on confirm_password if password changes and confirm_password has a value
+            if (registrationForm.classList.contains('was-validated')) { // If form was already validated
+                confirmPasswordInput.dispatchEvent(new Event('input', { bubbles: true })); // Trigger its validation
+            }
+        });
+        confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+    }
+
+    if (registrationForm) {
+        registrationForm.addEventListener('submit', function (event) {
+            if (confirmPasswordInput) { validateConfirmPassword(); } // Final check
+
+            if (!registrationForm.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            registrationForm.classList.add('was-validated');
+        }, false);
+    }
+});
+</script>
 {% endblock %}
