@@ -1,26 +1,25 @@
 # app/services/auth_service.py
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException, status, Request, Response
-from jose import jwt, JWTError  # Moved import to top level
+from jose import jwt, JWTError
 
 from app.db.schemas import user_schemas, token_schemas
-from app.repositories.user_repository import UserRepository  # Changed import
+from app.repositories.user_repository import UserRepository
 from app.core.security import (
     verify_password,
     create_access_token,
     create_refresh_token,
     set_auth_cookies,
     clear_auth_cookies,
-    # get_password_hash, # Not used directly in this file anymore
 )
 from app.db.models.user_model import User
-from app.services.user_service import user_service  # For user creation
+from app.services.user_service import user_service
 from app.core.config import settings
-# from datetime import datetime, timezone # Uncomment if you implement last_login
+from datetime import datetime, timezone  # <--- UNCOMMENT OR ADD THIS
 
-import logging  # Uncomment if you add logging
+import logging
 
-logger = logging.getLogger(__name__)  # Uncomment if you add logging
+logger = logging.getLogger(__name__)
 
 
 class AuthService:
@@ -50,27 +49,25 @@ class AuthService:
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
+        # Update last_login_at timestamp
+        user.last_login_at = datetime.now(timezone.utc)
+        db.add(user)  # Ensure the change is tracked by the session
+        # The commit will be handled by the get_async_db dependency wrapper
+
         access_token = create_access_token(data={"sub": user.username, "user_id": user.id})
         refresh_token = create_refresh_token(data={"sub": user.username, "user_id": user.id})
 
-        # DO NOT call set_auth_cookies here.
-        # Return the user and tokens. The route handler will set cookies.
         return user, access_token, refresh_token
 
     async def register_web(self, db: AsyncSession, *, user_in: user_schemas.UserCreate) -> User:
-        # This now directly calls user_service.create_user which handles checks and hashing
-        # Assuming user_service.create_user correctly uses UserRepository
         try:
             new_user = await user_service.create_user(db_session=db, user_in=user_in)
             logger.info(f"User {new_user.username} registered successfully.")
-            # Potentially trigger welcome email task here if not done in user_service
-            # from app.tasks.email_tasks import send_registration_email_task
-            # send_registration_email_task.delay(new_user.email, new_user.username)
             return new_user
-        except HTTPException as e:  # Propagate HTTPExceptions from user_service
+        except HTTPException as e:
             logger.warning(f"Registration failed for {user_in.username}: {e.detail}")
             raise e
-        except Exception as e:  # Catch other unexpected errors
+        except Exception as e:
             logger.error(
                 f"Unexpected error during registration for {user_in.username}: {e}", exc_info=True
             )
@@ -82,8 +79,8 @@ class AuthService:
     async def refresh_access_token_web(
         self,
         request: Request,
-        db: AsyncSession,  # REMOVE 'response: Response'
-    ) -> tuple[str, str]:  # Return new_access_token, new_refresh_token
+        db: AsyncSession,
+    ) -> tuple[str, str]:
         refresh_token_from_cookie = request.cookies.get("refresh_token")
         if not refresh_token_from_cookie:
             raise HTTPException(
@@ -119,14 +116,17 @@ class AuthService:
                     status_code=status.HTTP_400_BAD_REQUEST, detail="User is inactive"
                 )
 
+            # Optionally, update last_login_at on token refresh as well,
+            # as it indicates activity.
+            user.last_login_at = datetime.now(timezone.utc)
+            db.add(user)
+
             new_access_token = create_access_token(data={"sub": user.username, "user_id": user.id})
             new_refresh_token = create_refresh_token(
                 data={"sub": user.username, "user_id": user.id}
             )
-            # DO NOT call set_auth_cookies here
             return new_access_token, new_refresh_token
         except JWTError:
-            # DO NOT call clear_auth_cookies here
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid or expired refresh token",
@@ -134,7 +134,6 @@ class AuthService:
         except HTTPException:
             raise
         except Exception:
-            # DO NOT call clear_auth_cookies here
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="An unexpected error occurred while refreshing token.",
